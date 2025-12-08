@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +28,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,13 +46,15 @@ object AppTextField {
         value: String,
         title: String? = null,
         description: String? = null,
-        showError: Boolean = false,
         maxLines: Int = 1,
         height: Dp = Dimens.dp(55),
+        isNumberKeyboard: Boolean = false,
+        padding: PaddingValues = PaddingValues(horizontal = Dimens.dp12, vertical = Dimens.dp8),
         onValueChange: (String) -> Unit,
     ) {
         val focusManager = LocalFocusManager.current
         var isFocused by remember { mutableStateOf(false) }
+        val focusRequester = remember { FocusRequester() }
 
         Column {
             AppText(
@@ -60,47 +64,58 @@ object AppTextField {
                 color = Color.Black
             )
             Gap.H(Dimens.dp4)
+
             Box(
                 modifier = modifier
                     .fillMaxWidth()
                     .height(height)
-//                    .clip(RoundedCornerShape(Dimens.dp4))
                     .border(
                         width = Dimens.dp(1),
                         color = if (isFocused) PrimaryColor else LightGray,
                         shape = RoundedCornerShape(Dimens.dp4)
                     )
                     .background(White)
+                    .clickable { focusRequester.requestFocus() } // tap anywhere
                     .onFocusChanged { isFocused = it.isFocused }
-                    .padding(horizontal = Dimens.dp12, vertical = if (isFocused) Dimens.dp10 else Dimens.dp6),// you control padding here
-             contentAlignment = Alignment.CenterStart
+                ,
+                contentAlignment = Alignment.CenterStart
             ) {
                 BasicTextField(
                     value = value,
                     onValueChange = onValueChange,
                     maxLines = maxLines,
                     singleLine = maxLines == 1,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
+                        // put the padding here so placeholder and text get same layout
+                        .padding(padding),
                     textStyle = TextStyle(
                         fontWeight = FontWeight.Medium,
                         fontSize = Dimens.sp(12F),
                         color = Color.Black
                     ),
-                    keyboardOptions = KeyboardOptions.Default,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = if (isNumberKeyboard) KeyboardType.Number else KeyboardType.Text
+                    ),
                     keyboardActions = KeyboardActions(onDone = {
                         focusManager.clearFocus()
                     }),
-                    cursorBrush = androidx.compose.ui.graphics.SolidColor(PrimaryColor),
+                    cursorBrush = SolidColor(PrimaryColor),
                     decorationBox = { innerTextField ->
-
+                        // Wrap placeholder + innerTextField in same container (same modifier)
                         if (value.isEmpty()) {
                             Text(
                                 text = description ?: "John Doe",
+                                // use same style as textStyle (so baseline & size match)
+                                style = TextStyle(
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = Dimens.sp(12F),
+                                ),
                                 color = Color.Gray,
-                                fontSize = Dimens.sp(12F),
-                                fontWeight = FontWeight.Medium,
+                                maxLines = maxLines
                             )
                         }
-
                         innerTextField()
                     }
                 )

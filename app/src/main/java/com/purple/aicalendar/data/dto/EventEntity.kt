@@ -26,4 +26,5 @@ data class EventEntity (
     @ColumnInfo(name = "obligee") val obligee: String?,
     @ColumnInfo(name = "accountNumber") val accountNumber: String?,
     @ColumnInfo(name = "description") val description: String?,
+    @ColumnInfo(name = "pendingDelete") val pendingDelete: Boolean = false // new column
 )

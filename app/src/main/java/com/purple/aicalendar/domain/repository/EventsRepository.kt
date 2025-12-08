@@ -7,6 +7,9 @@ interface EventsRepository {
     suspend fun getUpcomingEvents(): Result<List<Event>>
     suspend fun getAllEvents(): Result<List<Event>>
     suspend fun deleteAllEvents()
+    suspend fun deleteAllPendingEvents()
+
+    suspend fun markEventsAsPending()
     suspend fun editEvents(
         id: String,
         title: String,

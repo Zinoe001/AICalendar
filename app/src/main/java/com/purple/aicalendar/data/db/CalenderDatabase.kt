@@ -15,7 +15,7 @@ import com.purple.aicalendar.data.dto.EventEntity
  *
  * @property eventDao Provides access to the `Note` table.
  */
-@Database(entities = [EventEntity::class], version = 1, exportSchema = false)
+@Database(entities = [EventEntity::class], version = 2, exportSchema = false)
 abstract class CalenderDatabase : RoomDatabase() {
 
     abstract fun eventDao(): EventDao

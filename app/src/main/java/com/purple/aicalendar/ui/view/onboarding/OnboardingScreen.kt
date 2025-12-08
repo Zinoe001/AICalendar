@@ -41,8 +41,6 @@ fun OnboardingScreen(
     navController: NavController,
     vm: SharedViewModel = hiltViewModel()
     ) {
-    val todayEvents by vm.todayEvents.collectAsState()
-    val upcomingEvents by vm.upcomingEvents.collectAsState()
     LaunchedEffect(key1 = Unit) {
         vm.getTodayEvents()
         vm.getUpcomingEvents()

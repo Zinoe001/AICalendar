@@ -1,5 +1,6 @@
 package com.purple.aicalendar.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.purple.aicalendar.core.utils.ScreenState
@@ -27,13 +28,7 @@ class SharedViewModel @Inject constructor(
     var allEvents = _allEvents.asStateFlow()
     private val _predictedEvents = MutableStateFlow<List<Event>>(emptyList())
     var predictedEvents = _predictedEvents.asStateFlow()
-
     var isEventsLoaded = MutableStateFlow(false)
-
-//    fun setEvents(today: List<Event>, upcoming: List<Event>) {
-//        _todayEvents.value = today
-//        _upcomingEvents.value = upcoming
-//    }
 
     fun getTodayEvents(){
         viewModelScope.launch {
@@ -57,15 +52,22 @@ class SharedViewModel @Inject constructor(
                 }
         }
     }
+
     fun getAllEvents(isPrediction:Boolean = false){
         viewModelScope.launch {
             eventsUseCase.getAllEvents()
                 .onSuccess { events ->
                     if(isPrediction){
-                        _predictedEvents.value = events}
+                        _predictedEvents.value = events
+                        markEventsAsPending()
+                        Log.d("SharedViewModel", "Getting and marking all pending events")
+                    }
                     else{
                     _allEvents.value = events
-                    isEventsLoaded.value = true}
+                    isEventsLoaded.value = true
+                     Log.d("SharedViewModel", "getAllEvents: ${events.size}")
+
+                    }
                 }
                 .onFailure {
 //                    val errorMessage = it.message ?: "Something went wrong"
@@ -110,7 +112,25 @@ class SharedViewModel @Inject constructor(
             eventsUseCase.deleteAllEvents()
         }
     }
+    fun deletePendingEvents() {
+        viewModelScope.launch {
+            try {
+                eventsUseCase.deleteAllPendingEvents() // suspend function
+                getAllEvents() // fetch fresh data
+                isEventsLoaded.value = true
+            } catch (e: Exception) {
+                Log.e("SharedViewModel", "Failed to delete pending events", e)
+            }
+        }
+    }
+
     private fun setSharedState(state: ScreenState){
         _uiState.update { state }
     }
+
+  fun markEventsAsPending() = viewModelScope.launch {
+        Log.d("SharedViewModel", "marking events as pending")
+        eventsUseCase.markEventsAsPending()
+    }
+
 }

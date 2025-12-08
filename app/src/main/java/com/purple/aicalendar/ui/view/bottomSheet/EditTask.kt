@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,43 +42,67 @@ import com.purple.aicalendar.ui.viewmodel.SharedViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-
 @Composable
 fun EditTask(
-    modifier: Modifier=Modifier,
-    onDismiss:()->Unit,
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
     event: Event,
     vm: SharedViewModel = hiltViewModel()
-){
-    var amount by remember { mutableStateOf("") }
-    var title by remember { mutableStateOf("") }
-    var number by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var note by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf("") }
+) {
+    // -----------------------------
+    // Create a detached copy of the event
+    // -----------------------------
+    var editable by remember { mutableStateOf(event.copy()) }
+
+    LaunchedEffect(event.id) {
+        editable = event.copy()
+    }
+    // -----------------------------
+    // State for form fields
+    // -----------------------------
+    var amount by remember { mutableStateOf(editable.amount) }
+    var title by remember { mutableStateOf(editable.title) }
+    var number by remember { mutableStateOf(editable.accountNumber ?: "") }
+    var name by remember {
+        mutableStateOf(
+            if (editable.transactionType == "Bill")
+                editable.billName ?: ""
+            else
+                editable.obligee ?: ""
+        )
+    }
+    var note by remember { mutableStateOf(editable.description ?: "") }
+    var selectedDate by remember { mutableStateOf(editable.date) }
     var showDateDialog by remember { mutableStateOf(false) }
-    val initialDate = event.date
+
     val context = LocalContext.current
 
     Column(
         modifier
             .fillMaxWidth()
-            .height(if(event.transactionType=="Bill")Dimens.dp(550)else Dimens.dp(600))
-            .padding(all = Dimens.dp24)
-            .background(White),
+            .height(if (editable.transactionType == "Bill") Dimens.dp(550) else Dimens.dp(600))
+            .padding(Dimens.dp24)
+            .background(White)
     ) {
+        // -----------------------------
+        // Close Button
+        // -----------------------------
         Row(
             modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_close),
-                contentDescription = "",
+                contentDescription = "Close",
                 modifier = Modifier
-                    .size(Dimens.dp16) // set a fixed size
-                    .clickable(onClick = onDismiss)
+                    .size(Dimens.dp16)
+                    .clickable { onDismiss() }
             )
         }
+
+        // -----------------------------
+        // Title
+        // -----------------------------
         Row(
             modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -87,26 +113,41 @@ fun EditTask(
                 fontWeight = FontWeight.Bold
             )
         }
+
         Gap.H(Dimens.dp20)
+
+        // -----------------------------
+        // Amount
+        // -----------------------------
         AppTextField.Text(
             value = amount,
             onValueChange = { amount = it },
             title = "Amount (₦)",
-            description = event.amount,
+            description = editable.amount,
             height = Dimens.dp(40),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isNumberKeyboard = true
         )
+
         Gap.H(Dimens.dp10)
+
+        // -----------------------------
+        // Title field
+        // -----------------------------
         AppTextField.Text(
             value = title,
             onValueChange = { title = it },
             title = "Title",
-            description = event.title,
+            description = editable.title,
             height = Dimens.dp(40),
             modifier = Modifier.fillMaxWidth()
         )
+
         Gap.H(Dimens.dp10)
-        // 🌟 DATE FIELD (clickable)
+
+        // -----------------------------
+        // Date Picker
+        // -----------------------------
         Column {
             AppText(
                 title = "Date",
@@ -125,33 +166,29 @@ fun EditTask(
                         shape = RoundedCornerShape(Dimens.dp4)
                     )
                     .background(White, RoundedCornerShape(Dimens.dp8))
-                    .padding(
-                        start = Dimens.dp12,
-                        top = Dimens.dp6,
-                        end = Dimens.dp12,
-                        bottom = Dimens.dp6
-                    )
+                    .padding(start = Dimens.dp12, top = Dimens.dp6, end = Dimens.dp12, bottom = Dimens.dp6)
                     .clickable { showDateDialog = true },
                 contentAlignment = Alignment.CenterStart
             ) {
                 AppText(
-                    title = selectedDate.ifEmpty { initialDate },
+                    title = selectedDate.ifEmpty { editable.date },
                     color = if (selectedDate.isEmpty()) Color.Gray else Color.Black,
                     fontSize = Dimens.sp(12F),
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Medium
                 )
             }
         }
-        // 🌟 SHOW DATE PICKER DIALOG
+
+        // Date Picker Dialog
         if (showDateDialog) {
             val dialog = Dialog(context)
             val calendar = Calendar.getInstance()
 
             // Parse initialDate safely
             runCatching {
-                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(initialDate)?.let {
-                    calendar.time = it
-                }
+                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    .parse(selectedDate.ifEmpty { editable.date })
+                    ?.let { calendar.time = it }
             }
 
             dialog.setContentView(R.layout.dialog_date_picker)
@@ -161,84 +198,98 @@ fun EditTask(
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
             ) { _, year, month, dayOfMonth ->
-                val formatted = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth)
-                selectedDate = formatted
+                selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth)
                 dialog.dismiss()
                 showDateDialog = false
             }
             dialog.show()
         }
+
         Gap.H(Dimens.dp10)
-        if(event.transactionType=="Bill"){
+
+        // -----------------------------
+        // Bill vs Transfer
+        // -----------------------------
+        if (editable.transactionType == "Bill") {
             AppTextField.Text(
                 value = name,
-                onValueChange = {name = it},
+                onValueChange = { name = it },
                 title = "Biller Name",
-                description = event.billName?:"Bill name",
+                description = editable.billName ?: "Bill name",
                 height = Dimens.dp(40),
-                modifier = Modifier .fillMaxWidth ()
+                modifier = Modifier.fillMaxWidth()
             )
-        }else{
+        } else {
             Column {
-
                 AppTextField.Text(
                     value = number,
-                    onValueChange = {number = it},
+                    onValueChange = { number = it },
                     title = "Account Number",
-                    description = event.accountNumber?:"0123456789",
+                    description = editable.accountNumber ?: "0123456789",
                     height = Dimens.dp(40),
-                    modifier = Modifier .fillMaxWidth ()
+                    modifier = Modifier.fillMaxWidth(),
+                    isNumberKeyboard = true
                 )
                 Gap.H(Dimens.dp10)
                 AppTextField.Text(
                     value = name,
-                    onValueChange = {name = it},
+                    onValueChange = { name = it },
                     title = "Account Name",
-                    description = event.obligee?:"John Doe",
+                    description = editable.obligee ?: "John Doe",
                     height = Dimens.dp(40),
-                    modifier = Modifier .fillMaxWidth ()
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
+
         Gap.H(Dimens.dp10)
+
+        // Notes
         AppTextField.Text(
             value = note,
-            onValueChange = {note = it},
+            onValueChange = { note = it },
             title = "Notes (Optional)",
             description = "Add any notes...",
             maxLines = 3,
             height = Dimens.dp(75),
-            modifier = Modifier .fillMaxWidth ()
+            modifier = Modifier.fillMaxWidth(),
+            padding= PaddingValues(top = Dimens.dp4, start =Dimens.dp12, end = Dimens.dp12 )
         )
-        Gap.H(Dimens.dp10)
-        Row(
-            modifier
-                .fillMaxWidth()
 
-            ){
+        Gap.H(Dimens.dp10)
+
+        // -----------------------------
+        // Buttons
+        // -----------------------------
+        Row(modifier.fillMaxWidth()) {
             AppButton.Outlined(
-                modifier.weight(1F),
-                text="Cancel",
+                modifier = Modifier.weight(1F),
+                text = "Cancel",
                 onTap = onDismiss
             )
             Gap.W(Dimens.dp8)
             AppButton.Primary(
-                modifier.weight(1F),
-                text="Save Changes",
+                modifier = Modifier.weight(1F),
+                text = "Save Changes",
                 onTap = {
                     vm.editEvent(
-                        amount = amount.ifEmpty { event.amount },
-                        title = title.ifEmpty { event.title },
-                        date = selectedDate.ifEmpty { event.date },
-                        name = name.ifEmpty {if(event.transactionType=="Bill") event.billName?:"" else event.obligee?:""},
-                        number = number.ifEmpty { event.accountNumber?:""},
-                        description = note.ifEmpty { event.description?:""},
-                        transactionType = event.transactionType,
-                        id = event.id,
+                        id = editable.id,
+                        amount = amount.ifEmpty { editable.amount },
+                        title = title.ifEmpty { editable.title },
+                        date = selectedDate.ifEmpty { editable.date },
+                        name = name.ifEmpty {
+                            if (editable.transactionType == "Bill") editable.billName ?: ""
+                            else editable.obligee ?: ""
+                        },
+                        number = number.ifEmpty { editable.accountNumber ?: "" },
+                        description = note.ifEmpty { editable.description ?: "" },
+                        transactionType = editable.transactionType
                     )
+                    onDismiss()
                 }
             )
         }
+
         Gap.H(Dimens.dp10)
     }
 }

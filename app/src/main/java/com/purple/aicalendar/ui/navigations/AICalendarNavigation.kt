@@ -1,5 +1,6 @@
 package com.purple.aicalendar.ui.navigations
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -24,14 +25,13 @@ import com.purple.aicalendar.ui.viewmodel.SharedViewModel
 @Composable
 fun AICalendarNavigation(
     navController: NavHostController,
-    vm: SharedViewModel = hiltViewModel(),
-
+    vm: SharedViewModel = hiltViewModel()
 ) {
     val allEvents = vm.allEvents.collectAsState().value
     val isLoaded = vm.isEventsLoaded.collectAsState().value
 
     LaunchedEffect(Unit) {
-        vm.getAllEvents()
+        vm.deletePendingEvents()
     }
 
     // ⛔ Don't render the NavHost until events are loaded

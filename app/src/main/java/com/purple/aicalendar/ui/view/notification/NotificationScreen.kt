@@ -173,15 +173,17 @@ fun NotificationScreen(
                 Gap.H(Dimens.dp10)
                 if(todayEvents.isEmpty()){
                     Column(
-                        modifier.fillMaxWidth().weight(1f),
+                        modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ){
+                        Gap.H(Dimens.dp(50))
                         AppText(
                             title = "No events today",
                             fontSize = Dimens.sp(14F),
                             fontWeight = FontWeight.Medium
                         )
+                        Gap.H(Dimens.dp(50))
                     }
                 }else{
                 DueList(
@@ -210,15 +212,17 @@ fun NotificationScreen(
                 Gap.H(Dimens.dp10)
                 if(upcomingEvents.isEmpty()){
                     Column(
-                        modifier.fillMaxWidth().weight(1f),
+                        modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ){
+                        Gap.H(Dimens.dp(50))
                         AppText(
                             title = "No upcoming events",
                             fontSize = Dimens.sp(14F),
                             fontWeight = FontWeight.Medium
                         )
+                        Gap.H(Dimens.dp(50))
                     }
                 }else{
                     PendingList(request = upcomingEvents)

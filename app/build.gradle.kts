@@ -128,6 +128,7 @@ dependencies {
 
     implementation(libs.material.theme.x)
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
     implementation(libs.google.services)
 //    implementation(libs.firebase.analytics.ktx)
 }

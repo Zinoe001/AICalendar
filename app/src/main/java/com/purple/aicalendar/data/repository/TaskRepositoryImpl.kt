@@ -1,6 +1,5 @@
 package com.purple.aicalendar.data.repository
 
-import android.util.Log
 import com.purple.aicalendar.core.utils.AICalendarPreference
 import com.purple.aicalendar.data.api.AICalenderApiServices
 import com.purple.aicalendar.data.dao.EventDao
@@ -124,7 +123,6 @@ class TaskRepositoryImpl  @Inject constructor(
             )
         )
         return try {
-            eventDao.insertEvents(events.map { it.toEntity()})
             Result.success(events)
         } catch (e: Exception) {
             Result.failure(e)
@@ -133,7 +131,6 @@ class TaskRepositoryImpl  @Inject constructor(
 
     override suspend fun postEvents(kept: List<Event>,discarded: List<Event>): Result<Boolean>{
         return try {
-            Log.d("TaskRepositoryImpl", " Inserted ${kept.size} events")
             eventDao.insertEvents(kept.map {it.toEntity()})
             Result.success(true)
         } catch (e: Exception) {
@@ -147,14 +144,22 @@ class TaskRepositoryImpl  @Inject constructor(
 
     override suspend fun getKeptEvents():List<Event>{
         return aiCalendarPreference.getKeptList()
-
     }
     override suspend fun getDiscardedEvents():List<Event>{
-
         return aiCalendarPreference.getDiscardList()
     }
+
     override suspend fun getPredictionEvents():List<Event>{
         return aiCalendarPreference.getPredictionList()
+    }
+
+    override suspend fun saveRemainingEvents(events: List<Event>){
+        try {
+            eventDao.insertEvents(events.map{it.toEntity()})
+//            Result.success(allEvent.map {it.toEvent()})
+        } catch (_: Exception) {
+//            Result.failure(e)
+        }
     }
 
 }

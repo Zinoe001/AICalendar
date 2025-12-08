@@ -60,6 +60,7 @@ okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okht
 material-theme-x = { group = "com.google.android.material", name = "material", version.ref = "serializationVersion" }
 google-services ={group="com.google.gms", name="google-services", version.ref = "googleServiceVersion"}
 firebase-bom ={group="com.google.firebase", name="firebase-bom", version.ref = "firebaseBomVersion"}
+firebase-messaging = {group="com.google.firebase", name="firebase-messaging"}
 #firebase-analytics-ktx ={group="com.google.firebase", name="firebase-analytics-ktx"}
 
 [plugins]

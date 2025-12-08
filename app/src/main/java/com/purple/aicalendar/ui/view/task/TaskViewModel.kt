@@ -55,6 +55,11 @@ class TaskViewModel  @Inject constructor(
         _events.update { current  -> listOf(event) + current  }
         scheduleAutoSave()
     }
+    fun saveRemainingEvents(){
+        viewModelScope.launch {
+            taskUseCase.saveRemainingEvents(events = _events.value)
+        }
+    }
 
     fun init() {
         viewModelScope.launch {

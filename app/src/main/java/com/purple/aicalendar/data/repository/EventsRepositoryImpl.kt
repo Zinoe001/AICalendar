@@ -18,11 +18,7 @@ class EventsRepositoryImpl  @Inject constructor (
     override suspend fun getTodayEvents(): Result<List<Event>> {
         return try {
             val today = LocalDate.now(ZoneId.of("UTC")).toString()
-
             // 4️⃣ QUERY ONLY TODAY'S EVENTS
-            val allEvent =  eventDao.getAllEvents()
-            Log.d("EventsRepositoryImpl", "getAllEvents: $allEvent")
-            Log.d("EventsRepositoryImpl", "today: $today")
             val todayEvents = eventDao.getEventsForDate(today)
             Log.d("EventsRepositoryImpl", "getTodayEvents: $todayEvents")
             Result.success(todayEvents.map {it.toEvent()})
@@ -35,11 +31,7 @@ class EventsRepositoryImpl  @Inject constructor (
         return try {
             // 3️⃣ GET TODAY'S DATE // "2025-11-30"
             val tomorrow = LocalDate.now(ZoneId.of("UTC")).plusDays(1).toString()
-
             // 4️⃣ QUERY ONLY TODAY'S EVENTS
-           val allEvent =  eventDao.getAllEvents()
-            Log.d("EventsRepositoryImpl", "getAllEvents2: $allEvent")
-
             val tomorrowEvents = eventDao.getEventsForDate(tomorrow)
             Log.d("EventsRepositoryImpl", "getTomorrowEvents: $tomorrowEvents")
             Result.success(tomorrowEvents.map {it.toEvent()})
@@ -59,8 +51,21 @@ class EventsRepositoryImpl  @Inject constructor (
         }
     }
 
+
     override suspend fun deleteAllEvents() {
         eventDao.deleteAllEvents()
+    }
+
+    override suspend fun deleteAllPendingEvents(){
+        eventDao.deletePendingEvents()
+    }
+    override suspend fun markEventsAsPending(){
+        try {
+            eventDao.markAllPendingDelete()
+//            Result.success(allEvent.map {it.toEvent()})
+        } catch (_: Exception) {
+//            Result.failure(e)
+        }
     }
 
     override suspend fun editEvents(

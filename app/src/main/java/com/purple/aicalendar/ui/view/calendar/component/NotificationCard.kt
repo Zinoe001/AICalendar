@@ -200,20 +200,20 @@ object NotificationCard{
                     .fillMaxHeight()
                     .width(Dimens.dp4)
                     .clip(RoundedCornerShape(topStart = Dimens.dp(40), bottomStart = Dimens.dp(40)))
-                    .background(DarkGray)
+                    .background(PrimaryColor)
             )
             Gap.W(Dimens.dp(10))
             Box(
                 modifier = Modifier
                     .size(Dimens.dp(50))
-                    .background(LightGray, RoundedCornerShape(Dimens.dp(12))),
+                    .background(SecondaryColor, RoundedCornerShape(Dimens.dp(12))),
                 contentAlignment = Alignment.Center
             ) {
 
                 Image(
                     painter = painterResource(id = R.drawable.ic_calender),
                     contentDescription = "",
-                    colorFilter = ColorFilter.tint(DarkGray),
+                    colorFilter = ColorFilter.tint(PrimaryColor),
                     modifier = Modifier
                         .size(Dimens.dp(20)) // set a fixed size
                 )
@@ -331,20 +331,20 @@ object NotificationCard{
                     .fillMaxHeight()
                     .width(Dimens.dp4)
                     .clip(RoundedCornerShape(topStart = Dimens.dp(40), bottomStart = Dimens.dp(40)))
-                    .background(DarkYellow)
+                    .background(PrimaryColor)
             )
             Gap.W(Dimens.dp(10))
             Box(
                 modifier = Modifier
                     .size(Dimens.dp(50))
-                    .background(MediumYellow, RoundedCornerShape(Dimens.dp(12))),
+                    .background(SecondaryColor, RoundedCornerShape(Dimens.dp(12))),
                 contentAlignment = Alignment.Center
             ) {
 
                 Image(
                     painter = painterResource(id = R.drawable.ic_calender),
                     contentDescription = "",
-                    colorFilter = ColorFilter.tint(DarkYellow),
+                    colorFilter = ColorFilter.tint(PrimaryColor),
                     modifier = Modifier
                         .size(Dimens.dp(20)) // set a fixed size
                 )

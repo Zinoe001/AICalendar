@@ -13,21 +13,20 @@ import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
-
-/**
- * The name of the DataStore preferences file.
- * Using the application ID ensures the preference file is uniquely named for this app.
- */
-const val preferenceName = BuildConfig.APPLICATION_ID
-/**
- * Extension property on [Context] to provide a singleton instance of [DataStore] for Preferences.
- *
- * This uses the `preferencesDataStore` delegate, which ensures that there's only one
- * instance of DataStore with the name [preferenceName] in the application.
- */
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = preferenceName)
 @Singleton
 class AICalendarPreference @Inject constructor(private val cont: Context) {
+    /**
+     * The name of the DataStore preferences file.
+     * Using the application ID ensures the preference file is uniquely named for this app.
+     */
+     val preferenceName = BuildConfig.APPLICATION_ID
+    /**
+     * Extension property on [Context] to provide a singleton instance of [DataStore] for Preferences.
+     *
+     * This uses the `preferencesDataStore` delegate, which ensures that there's only one
+     * instance of DataStore with the name [preferenceName] in the application.
+     */
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = preferenceName)
     private object Keys {
         val KEPT_LIST = stringPreferencesKey("kept_list")
         val DISCARDED_LIST = stringPreferencesKey("discarded_list")

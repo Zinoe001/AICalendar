@@ -70,4 +70,13 @@ interface EventDao {
      */
     @Query("DELETE FROM event_model")
     suspend fun deleteAllEvents()
+
+    @Query("DELETE FROM event_model WHERE pendingDelete = 1")
+    suspend fun deletePendingEvents()
+
+    @Query("UPDATE event_model SET pendingDelete = 1")
+    suspend fun markAllPendingDelete()
+
+//    @Query("SELECT * FROM event_model WHERE pendingDelete = 1")
+//    suspend fun getPendingDeleteEvents(): List<EventEntity>
 }

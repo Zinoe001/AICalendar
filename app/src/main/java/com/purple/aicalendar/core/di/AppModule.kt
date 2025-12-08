@@ -2,6 +2,8 @@ package com.purple.aicalendar.core.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.purple.aicalendar.BuildConfig
 import com.purple.aicalendar.core.utils.AICalendarPreference
 import com.purple.aicalendar.data.api.AICalenderApiServices
@@ -109,6 +111,15 @@ object AppModule {
         @ApplicationContext context: Context
     ): AICalendarPreference = AICalendarPreference(context)
 
+
+    // Migration from version 1 to 2
+    private val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "ALTER TABLE event_model ADD COLUMN pendingDelete INTEGER NOT NULL DEFAULT 0"
+            )
+        }
+    }
     /**
      * Provides a singleton instance of the [CalenderDatabase].
      *
@@ -128,7 +139,8 @@ object AppModule {
             CalenderDatabase::class.java,
             "user_database"
         )
-            .fallbackToDestructiveMigration(false)
+            .addMigrations(MIGRATION_1_2) // <-- add your migration here
+            .fallbackToDestructiveMigration(false) // optional, keeps existing data
             .build()
 
 

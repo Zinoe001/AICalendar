@@ -41,7 +41,6 @@ fun TaskScreen(
     var isDiscarded by remember { mutableStateOf(false) }
 
 
-
     LaunchedEffect(allEvents) {
         vm.deleteAllTask = sharedVm::deleteEvents
         if (allEvents.isEmpty()) {
@@ -50,6 +49,7 @@ fun TaskScreen(
             vm.setAllEvents(allEvents)
         }
     }
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         // -------------------------
@@ -119,7 +119,11 @@ fun TaskScreen(
                                 totalItems = totalItems,
                                 onDiscardTap = { isDiscarded = true },
                                 onKeptTap = { isDiscarded = false },
-                                onEditClick = { selectedEvent = it }
+                                onEditClick = {
+                                    vm.saveRemainingEvents()
+                                    selectedEvent = it
+                                }
+
                             )
                         }
                     }
@@ -139,7 +143,10 @@ fun TaskScreen(
             selectedEvent?.let { event ->
                 EditTask(
                     event = event,
-                    onDismiss = { selectedEvent = null }
+                    onDismiss = {
+                        sharedVm.markEventsAsPending()
+                        selectedEvent = null
+                    }
                 )
             }
         }
