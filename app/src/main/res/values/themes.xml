@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- Main App Theme -->
+<style name="Theme.AICalendar" parent="Theme.Material3.Light.NoActionBar">
+    <!-- Primary brand color -->
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryContainer">@color/colorPrimaryVariant</item>
+
+    <!-- Secondary brand color -->
+    <item name="colorSecondary">@color/colorPrimary</item>
+</style>
+<!-- Native splash theme -->
+<style name="Theme.AICalendar.Splash" parent="Theme.SplashScreen">
+    <!-- Splash background color -->
+    <item name="windowSplashScreenBackground">@color/white</item>
+
+    <!-- Splash icon -->
+    <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+
+    <!-- Optional: icon animation duration -->
+    <item name="windowSplashScreenAnimationDuration">5000</item>
+
+    <!-- Theme shown after splash -->
+    <item name="postSplashScreenTheme">@style/Theme.AICalendar</item>
+</style>
+
+</resources>

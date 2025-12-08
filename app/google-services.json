@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "645554281926",
+    "project_id": "aicalendar-c17f8",
+    "storage_bucket": "aicalendar-c17f8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:645554281926:android:d50e9aa8a76a3200a026c7",
+        "android_client_info": {
+          "package_name": "com.purple.aicalendar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkHWm0Saq9PKgo0R6rZl3CH_zhZmvdcoo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

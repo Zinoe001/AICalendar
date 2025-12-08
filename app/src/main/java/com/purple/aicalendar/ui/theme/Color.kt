@@ -1,0 +1,20 @@
+package com.purple.aicalendar.ui.theme
+
+import androidx.compose.ui.graphics.Color
+val PrimaryColor = Color(0xFFA80011)
+val SecondaryColor = Color(0xFFF2D9D9)
+val TertiaryColor = Color(0xFFF2D9D9)
+val Black = Color(0xFF000000)
+val White = Color(0xFFFFFFFF)
+val DarkGray = Color(0xFF444444)
+val MediumGray = Color(0xFF575757)
+val LightGray = Color(0xFF929292)
+val DarkGreen = Color(0xFF0BA800)
+val MediumGreen = Color(0xFF5DF83E)
+val LightGreen = Color(0xFFDAF2D9)
+val DarkYellow = Color(0xFFE9C229)
+val MediumYellow = Color(0xFFFFE81A)
+val LightYellow = Color(0xFFFDFAE1)
+val DarkRed = Color(0xFF781212)
+val MediumRed = Color(0xFFFFCFCF)
+val LightRed = Color(0xFFFFE1E1)
