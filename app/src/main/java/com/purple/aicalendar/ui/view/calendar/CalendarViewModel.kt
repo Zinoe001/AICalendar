@@ -2,10 +2,10 @@ package com.purple.aicalendar.ui.view.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.purple.aicalendar.core.utils.ScreenState
 import com.purple.aicalendar.domain.models.Event
 import com.purple.aicalendar.domain.usecase.GetAllCalendarUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,14 +27,12 @@ class CalendarViewModel @Inject constructor(
         )
     )
     val uiState: StateFlow<CalendarState> = _uiState.asStateFlow()
-
-    private val _uiSecondaryState = MutableStateFlow<ScreenState>(ScreenState.Initial)
-    var uiSecondaryState = _uiSecondaryState.asStateFlow()
     private val _allEvents = MutableStateFlow<List<Event>>(emptyList())
     var allEvents = _allEvents.asStateFlow()
 
     fun getAllEvents(){
         viewModelScope.launch {
+            delay(5000)
             calendarUseCase.getAllEvents()
                 .onSuccess{ events ->
                     _allEvents.value = events

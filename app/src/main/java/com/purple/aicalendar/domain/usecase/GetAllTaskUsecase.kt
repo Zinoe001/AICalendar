@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class GetAllTaskUsecase @Inject constructor (private val taskRepository: TaskRepository) {
 
-    suspend fun getPredictions() = taskRepository.getPredictions()
+    suspend fun getPredictions(month: Int, year: Int) = taskRepository.getPredictions(month= month, year= year)
     suspend fun postEvents(kept:List<Event>,discarded: List<Event>) = taskRepository.postEvents(kept,discarded)
 
     suspend fun saveEvents(kept:List<Event>,discarded: List<Event>,predictions: List<Event>) = taskRepository.saveEvents(kept= kept,discarded= discarded,predictions=predictions)

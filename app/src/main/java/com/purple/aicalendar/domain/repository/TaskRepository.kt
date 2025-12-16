@@ -4,7 +4,7 @@ import com.purple.aicalendar.domain.models.Event
 
 interface TaskRepository {
     //API Calls
-    suspend fun getPredictions(): Result<List<Event>>
+    suspend fun getPredictions(month: Int, year: Int): Result<List<Event>>
     suspend fun postEvents(kept: List<Event>,discarded: List<Event>): Result<Boolean>
     //Data Store Calls
     suspend fun saveEvents(kept:List<Event>,discarded: List<Event>,predictions: List<Event>)

@@ -30,7 +30,7 @@ class SharedViewModel @Inject constructor(
     var predictedEvents = _predictedEvents.asStateFlow()
     var isEventsLoaded = MutableStateFlow(false)
 
-    fun getTodayEvents(){
+    fun getTodayEvents() {
         viewModelScope.launch {
             eventsUseCase.getTodayEvents()
                 .onSuccess { events ->
@@ -41,7 +41,8 @@ class SharedViewModel @Inject constructor(
                 }
         }
     }
-    fun getUpcomingEvents(){
+
+    fun getUpcomingEvents() {
         viewModelScope.launch {
             eventsUseCase.getUpcomingEvents()
                 .onSuccess { events ->
@@ -53,19 +54,18 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun getAllEvents(isPrediction:Boolean = false){
+    fun getAllEvents(isPrediction: Boolean = false) {
         viewModelScope.launch {
             eventsUseCase.getAllEvents()
                 .onSuccess { events ->
-                    if(isPrediction){
+                    if (isPrediction) {
                         _predictedEvents.value = events
                         markEventsAsPending()
                         Log.d("SharedViewModel", "Getting and marking all pending events")
-                    }
-                    else{
-                    _allEvents.value = events
-                    isEventsLoaded.value = true
-                     Log.d("SharedViewModel", "getAllEvents: ${events.size}")
+                    } else {
+                        _allEvents.value = events
+                        isEventsLoaded.value = true
+                        Log.d("SharedViewModel", "getAllEvents: ${events.size}")
 
                     }
                 }
@@ -84,19 +84,21 @@ class SharedViewModel @Inject constructor(
         number: String,
         title: String,
         description: String,
-    ){
+        isCalender: Boolean
+    ) {
         viewModelScope.launch {
             setSharedState(ScreenState.LoadingState)
             delay(2000)
             eventsUseCase.editEvents(
-                id =id,
+                id = id,
                 amount = amount,
                 title = title,
                 date = date,
                 transactionType = transactionType,
                 name = name,
                 number = number,
-                description = description
+                description = description,
+                isCalender = isCalender
             )
                 .onSuccess {
                     setSharedState(ScreenState.Success("Success"))
@@ -107,11 +109,13 @@ class SharedViewModel @Inject constructor(
                 }
         }
     }
+
     fun deleteEvents() {
-       viewModelScope.launch {
+        viewModelScope.launch {
             eventsUseCase.deleteAllEvents()
         }
     }
+
     fun deletePendingEvents() {
         viewModelScope.launch {
             try {
@@ -124,13 +128,20 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    private fun setSharedState(state: ScreenState){
+    private fun setSharedState(state: ScreenState) {
         _uiState.update { state }
     }
 
-  fun markEventsAsPending() = viewModelScope.launch {
-        Log.d("SharedViewModel", "marking events as pending")
+    fun markEventsAsPending() = viewModelScope.launch {
         eventsUseCase.markEventsAsPending()
+    }
+
+    fun checkDevice(token: String) = viewModelScope.launch {
+        eventsUseCase.checkDevice().onSuccess {
+            if(!it){
+                eventsUseCase.registerDevice(token=token)
+            }
+        }
     }
 
 }

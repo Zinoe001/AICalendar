@@ -47,6 +47,7 @@ fun EditTask(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
     event: Event,
+    isCalender: Boolean,
     vm: SharedViewModel = hiltViewModel()
 ) {
     // -----------------------------
@@ -65,9 +66,6 @@ fun EditTask(
     var number by remember { mutableStateOf(editable.accountNumber ?: "") }
     var name by remember {
         mutableStateOf(
-            if (editable.transactionType == "Bill")
-                editable.billName ?: ""
-            else
                 editable.obligee ?: ""
         )
     }
@@ -135,14 +133,13 @@ fun EditTask(
         // Title field
         // -----------------------------
         AppTextField.Text(
-            value = title,
-            onValueChange = { title = it },
-            title = "Title",
-            description = editable.title,
-            height = Dimens.dp(40),
-            modifier = Modifier.fillMaxWidth()
+                value = title,
+                onValueChange = { title = it },
+                title = if (event.transactionType == "Bill") "Biller Name" else "Title",
+                description = editable.title,
+                height = Dimens.dp(40),
+                modifier = Modifier.fillMaxWidth()
         )
-
         Gap.H(Dimens.dp10)
 
         // -----------------------------
@@ -171,7 +168,7 @@ fun EditTask(
                 contentAlignment = Alignment.CenterStart
             ) {
                 AppText(
-                    title = selectedDate.ifEmpty { editable.date },
+                    title =  selectedDate.take(10).ifEmpty { editable.date },
                     color = if (selectedDate.isEmpty()) Color.Gray else Color.Black,
                     fontSize = Dimens.sp(12F),
                     fontWeight = FontWeight.Medium
@@ -198,7 +195,8 @@ fun EditTask(
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
             ) { _, year, month, dayOfMonth ->
-                selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth)
+                selectedDate = String.format(Locale.getDefault(),
+                    "%04d-%02d-%02dT00:00:00.000Z", year, month + 1, dayOfMonth)
                 dialog.dismiss()
                 showDateDialog = false
             }
@@ -211,14 +209,7 @@ fun EditTask(
         // Bill vs Transfer
         // -----------------------------
         if (editable.transactionType == "Bill") {
-            AppTextField.Text(
-                value = name,
-                onValueChange = { name = it },
-                title = "Biller Name",
-                description = editable.billName ?: "Bill name",
-                height = Dimens.dp(40),
-                modifier = Modifier.fillMaxWidth()
-            )
+            Gap.H(Dimens.dp(0))
         } else {
             Column {
                 AppTextField.Text(
@@ -278,12 +269,12 @@ fun EditTask(
                         title = title.ifEmpty { editable.title },
                         date = selectedDate.ifEmpty { editable.date },
                         name = name.ifEmpty {
-                            if (editable.transactionType == "Bill") editable.billName ?: ""
-                            else editable.obligee ?: ""
+                            editable.obligee ?: ""
                         },
                         number = number.ifEmpty { editable.accountNumber ?: "" },
                         description = note.ifEmpty { editable.description ?: "" },
-                        transactionType = editable.transactionType
+                        transactionType = editable.transactionType,
+                        isCalender = isCalender
                     )
                     onDismiss()
                 }

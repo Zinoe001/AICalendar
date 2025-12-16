@@ -63,7 +63,7 @@ fun TaskScreen(
                 .then(if (selectedEvent != null) Modifier.blur(Dimens.dp(8)) else Modifier)
         ) {
             AppHeader(
-                showBack = true,
+                showBack =  events.isNotEmpty(),
                 navController = navController
             )
 
@@ -143,6 +143,7 @@ fun TaskScreen(
             selectedEvent?.let { event ->
                 EditTask(
                     event = event,
+                    isCalender = false,
                     onDismiss = {
                         sharedVm.markEventsAsPending()
                         selectedEvent = null

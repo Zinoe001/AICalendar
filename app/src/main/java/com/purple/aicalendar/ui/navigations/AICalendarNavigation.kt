@@ -8,6 +8,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.google.firebase.messaging.FirebaseMessaging
+import com.purple.aicalendar.BuildConfig
 import com.purple.aicalendar.ui.view.calendar.CalendarScreen
 import com.purple.aicalendar.ui.view.notification.NotificationScreen
 import com.purple.aicalendar.ui.view.onboarding.OnboardingScreen
@@ -31,6 +33,10 @@ fun AICalendarNavigation(
     val isLoaded = vm.isEventsLoaded.collectAsState().value
 
     LaunchedEffect(Unit) {
+        FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
+            Log.d("FCM_TOKEN", token)
+            vm.checkDevice(token)
+        }
         vm.deletePendingEvents()
     }
 
