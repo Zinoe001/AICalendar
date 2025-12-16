@@ -83,7 +83,7 @@ fun OnboardingScreen(
             fontWeight = FontWeight.Bold)
         Gap.H(Dimens.dp4)
         AppText(
-            title = "Financial Assistant",
+            title = "Financial Calendar ",
             color = PrimaryColor,
             fontSize = Dimens.sp(32),
             fontWeight = FontWeight.Bold)
@@ -113,7 +113,7 @@ fun OnboardingScreen(
             description = "Get notified one day before each payment is due.")
         Gap.H(Dimens.dp(33))
         AppButton.Primary(
-            text = "Start Prediction",
+            text = "Plan My Calendar",
             modifier = Modifier.fillMaxWidth(),
             onTap = {
                 navController.navigate(AICalendarScreens.TaskScreen) {

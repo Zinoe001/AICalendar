@@ -21,9 +21,9 @@ class EventsRepositoryImpl  @Inject constructor (
 
     override suspend fun checkDevice(): Result<Boolean> {
         return try {
-            Log.d("EventsRepositoryImpl", "checkDevice: ${BuildConfig.USER_3}")
+            Log.d("EventsRepositoryImpl", "checkDevice: ${BuildConfig.USER_2}")
 
-            val response = apiService.checkDevice(id = BuildConfig.USER_3)
+            val response = apiService.checkDevice(id = BuildConfig.USER_2)
 
             if (response.isSuccessful) {
                 val registered = response.body()?.isRegistered ?: false
@@ -41,8 +41,8 @@ class EventsRepositoryImpl  @Inject constructor (
 
     override suspend fun registerDevice(token: String) {
         try {
-            Log.d("EventsRepositoryImpl", "registerDevice: $token,${BuildConfig.USER_3}")
-            val body = RegisterDevice(fcmToken = token, userId = BuildConfig.USER_3)
+            Log.d("EventsRepositoryImpl", "registerDevice: $token,${BuildConfig.USER_2}")
+            val body = RegisterDevice(fcmToken = token, userId = BuildConfig.USER_2)
             val response = apiService.registerDevice(body)
             if (response.isSuccessful) {
                 Log.d("EventsRepositoryImpl", "Success: ${response.body()?.message}")

@@ -20,10 +20,9 @@ class TaskRepositoryImpl  @Inject constructor(
 
     override suspend fun getPredictions( month: Int, year: Int): Result<List<Event>> {
         return try {
-            val response = apiService.getEvents(id= BuildConfig.USER_3, year =  year,month= month)
+            val response = apiService.getEvents(id= BuildConfig.USER_2, year =  year,month= month)
 //            val response = apiService.getItemsLimit(id= BuildConfig.USER_4)
             val predictions = if (response.isNotEmpty()) {
-
                     response.flatMap { it.items }.map { it.toEvent() }
                 } else {
                     emptyList()

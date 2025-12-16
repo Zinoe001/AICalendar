@@ -19,6 +19,7 @@ import com.purple.aicalendar.ui.view.task.component.TaskCompleted
 import com.purple.aicalendar.ui.view.task.component.TaskSelection
 import com.purple.aicalendar.ui.navigations.AICalendarScreens
 import com.purple.aicalendar.ui.viewmodel.SharedViewModel
+import java.time.LocalDate
 
 @Composable
 fun TaskScreen(
@@ -39,7 +40,7 @@ fun TaskScreen(
 
     var selectedEvent by remember { mutableStateOf<Event?>(null) }
     var isDiscarded by remember { mutableStateOf(false) }
-
+    val currentMonthName = LocalDate.now().month.name
 
     LaunchedEffect(allEvents) {
         vm.deleteAllTask = sharedVm::deleteEvents
@@ -93,7 +94,7 @@ fun TaskScreen(
                     } else {
                         Column {
                             AppText(
-                                title = if (isDiscarded) "Discarded Tasks" else "Suggested Tasks",
+                                title = if (isDiscarded) "Discarded Schedule" else "$currentMonthName Schedule",
                                 fontSize = Dimens.sp(24f),
                                 fontWeight = FontWeight.Bold
                             )

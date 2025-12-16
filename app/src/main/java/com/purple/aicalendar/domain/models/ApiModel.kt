@@ -55,6 +55,54 @@ data class EventsRequestBody(
     val rejectedItemIds: List<String>
 )
 
+data class CalendarResponse(
+    @SerializedName("calendarId")
+    val calendarId: String,
+
+    @SerializedName("userId")
+    val userId: String,
+
+    @SerializedName("items")
+    val items: List<CalendarItem>,
+
+    @SerializedName("createdAt")
+    val createdAt: String
+)
+
+data class CalendarItem(
+    @SerializedName("itemId")
+    val itemId: String,
+
+    @SerializedName("predictionItemId")
+    val predictionItemId: String,
+
+    @SerializedName("merchant")
+    val merchant: String,
+
+    @SerializedName("amount")
+    val amount: Double,
+
+    @SerializedName("dueDate")
+    val dueDate: String,
+
+    @SerializedName("account")
+    val account: String?,          // nullable
+
+    @SerializedName("accountName")
+    val accountName: String?,      // nullable
+
+    @SerializedName("description")
+    val description: String?,      // nullable
+
+    @SerializedName("isPaid")
+    val isPaid: Boolean,
+
+    @SerializedName("paidDate")
+    val paidDate: String?,         // nullable
+
+    @SerializedName("createdAt")
+    val createdAt: String
+)
 @Serializable
 data class ApiMessageResponse(
     val message: String
@@ -83,3 +131,4 @@ data class ItemDto(
     val accountName: String?,
     val description: String?,
 )
+

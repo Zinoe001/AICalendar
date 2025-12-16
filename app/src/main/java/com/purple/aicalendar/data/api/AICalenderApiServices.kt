@@ -1,6 +1,7 @@
 package com.purple.aicalendar.data.api
 
 import com.purple.aicalendar.domain.models.ApiMessageResponse
+import com.purple.aicalendar.domain.models.CalendarResponse
 import com.purple.aicalendar.domain.models.EditRequest
 import com.purple.aicalendar.domain.models.EditRequestBody
 import com.purple.aicalendar.domain.models.EventResponse
@@ -55,7 +56,7 @@ interface AICalenderApiServices {
     @GET("api/calendar/user/{id}")
     suspend fun getCalendar(
         @Path("id") id: String,
-    ): List<EventResponse>
+    ): Response<CalendarResponse>
 
     @PUT("api/calendar/items/{id}")
     suspend fun editCalendarEvents(

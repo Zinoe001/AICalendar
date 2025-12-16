@@ -19,19 +19,38 @@ class CalendarRepositoryImpl @Inject constructor (
 ) : CalendarRepository {
     override suspend fun getAllEvents(): Result<List<Event>> {
         return try {
-            val response = apiService.getCalendar(id = BuildConfig.USER_1)
-            val events =  if (response.isNotEmpty()) {
-                response.flatMap { it.items }.map { it.toEvent() }
-            } else {
-                emptyList()
+            val response = apiService.getCalendar(id = BuildConfig.USER_4)
+
+            if (!response.isSuccessful) {
+                return Result.failure(
+                    Exception("API Error: ${response.code()} ${response.message()}")
+                )
             }
-            Log.d("CalendarRepositoryImpl", "response: ${events.size}")
-            // 4️⃣ INSERT ALL EVENTS
+
+            val body = response.body()
+                ?: return Result.failure(Exception("Empty response body"))
+
+            val events = body.items.map{it.toEvent()}
+
+            Log.d(
+                "CalendarRepositoryImpl",
+                "Success: ${events.size}"
+            )
+
+            // 1️⃣ Insert events into DB
             eventDao.insertEvents(events.map { it.toEntity() })
-            // 4️⃣ QUERY ONLY ALL EVENTS
-            val allEvent =  eventDao.getAllEvents()
-            Log.d("CalendarRepositoryImpl", "getAllEvents: ${allEvent.size}")
-            Result.success(allEvent.map {it.toEvent()})
+
+            // 2️⃣ Query events from DB
+            val allEvents = eventDao.getAllEvents()
+
+            Log.d(
+                "CalendarRepositoryImpl",
+                "getAllEvents: ${allEvents.size}"
+            )
+
+            // 3️⃣ Map entity → domain
+            Result.success(allEvents.map { it.toEvent() })
+
         } catch (e: Exception) {
             Log.e("CalendarRepositoryImpl", "Exception", e)
             Result.failure(e)

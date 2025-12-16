@@ -104,7 +104,6 @@ class TaskViewModel  @Inject constructor(
         viewModelScope.launch {
             setSecondaryTaskState(ScreenState.LoadingState)
             Log.d("TaskViewModel", "postEvent: ${_keptEvents.value},${_discardedEvents.value}")
-            delay(5000)
             taskUseCase.postEvents(_keptEvents.value,_discardedEvents.value)
                 .onSuccess {
                     setSecondaryTaskState(ScreenState.Success("Success"))
