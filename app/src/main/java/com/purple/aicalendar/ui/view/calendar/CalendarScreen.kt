@@ -29,9 +29,7 @@ import com.purple.aicalendar.ui.components.AppHeader
 import com.purple.aicalendar.ui.components.AppLoader
 import com.purple.aicalendar.ui.components.AppText
 import com.purple.aicalendar.ui.components.CustomBottomSheet
-import com.purple.aicalendar.ui.components.CustomListView
 import com.purple.aicalendar.ui.components.Gap
-import com.purple.aicalendar.ui.navigations.AICalendarScreens
 import com.purple.aicalendar.ui.theme.DarkGray
 import com.purple.aicalendar.ui.theme.DarkRed
 import com.purple.aicalendar.ui.theme.DarkYellow
@@ -48,7 +46,6 @@ import com.purple.aicalendar.ui.view.bottomSheet.Payment
 import com.purple.aicalendar.ui.view.calendar.component.EventListForSelectedDay
 import com.purple.aicalendar.ui.view.calendar.component.ExpandableCalendar
 import com.purple.aicalendar.ui.view.calendar.component.InfoCard
-import com.purple.aicalendar.ui.view.calendar.component.NotificationCard
 import com.purple.aicalendar.ui.viewmodel.SharedViewModel
 
 @Composable
@@ -181,14 +178,17 @@ fun CalendarScreen(
                             showPaymentSheet = false
                         }
                     ) {
-                        EditTask(
-                            event = selectedEvent!!,
-                            onDismiss = {
-                                showEditSheet = false
-                                selectedEvent = null
-                                showPaymentSheet = false
-                            }
-                        )
+                        selectedEvent?.let { event ->
+                            EditTask(
+                                event = event,
+                                isCalender = true,
+                                onDismiss = {
+                                    showEditSheet = false
+                                    selectedEvent = null
+                                    showPaymentSheet = false
+                                }
+                            )
+                        }
                     }
                 }
 
@@ -201,16 +201,18 @@ fun CalendarScreen(
                             showPaymentSheet = false
                         }
                     ) {
-                        ConfirmPayment(
-                            event = selectedEvent!!,
-                            onDismiss = {
-                                selectedEvent = null
-                                showPaymentSheet = false
-                            },
-                            onProceed = {
-                                showPaymentSheet = true // Switch to Payment Sheet
-                            }
-                        )
+                        selectedEvent?.let { event ->
+                            ConfirmPayment(
+                                event = selectedEvent!!,
+                                onDismiss = {
+                                    selectedEvent = null
+                                    showPaymentSheet = false
+                                },
+                                onProceed = {
+                                    showPaymentSheet = true // Switch to Payment Sheet
+                                }
+                            )
+                        }
                     }
                 }
 

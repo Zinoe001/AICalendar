@@ -60,11 +60,11 @@ fun TaskCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 AppText(
-                    title = event.type.uppercase(),
+                    title = if(event.transactionType == "Bill") "UTILITY" else "FINANCE",
                     fontSize = Dimens.sp(12F),
                     fontWeight = FontWeight.Medium)
                 AppText(
-                    title = "${event.accuracy} MATCH",
+                    title = "${event.accuracy}% MATCH",
                     fontSize = Dimens.sp(12F),
                     fontWeight = FontWeight.Medium,
                     color = PrimaryColor

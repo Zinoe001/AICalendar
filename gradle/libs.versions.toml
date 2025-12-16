@@ -22,7 +22,7 @@ gson = "2.13.2"
 retrofit = "3.0.0"
 okhttp3Logging = "5.3.2"
 kspVersion = "2.2.0-2.0.2"
-
+accompanistVersion = "0.24.13-rc"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -61,6 +61,7 @@ material-theme-x = { group = "com.google.android.material", name = "material", v
 google-services ={group="com.google.gms", name="google-services", version.ref = "googleServiceVersion"}
 firebase-bom ={group="com.google.firebase", name="firebase-bom", version.ref = "firebaseBomVersion"}
 firebase-messaging = {group="com.google.firebase", name="firebase-messaging"}
+accompanist = {group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistVersion"}
 #firebase-analytics-ktx ={group="com.google.firebase", name="firebase-analytics-ktx"}
 
 [plugins]

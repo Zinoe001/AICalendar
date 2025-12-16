@@ -45,13 +45,12 @@ interface EventDao {
      * @param title The new title for the note.
      * @param date The new date string for the note.
      */
-    @Query("UPDATE event_model SET title = :title,amount=:amount,billName=:billName,description=:description,date = :date WHERE uid = :uid")
+    @Query("UPDATE event_model SET title = :title,amount=:amount,description=:description,date = :date WHERE uid = :uid")
     suspend fun updateBillEvent(
         uid: String,
         title: String,
         date:String,
         amount:String,
-        billName:String,
         description:String,
         )
 

@@ -3,6 +3,7 @@ package com.purple.aicalendar.ui.view.task
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.purple.aicalendar.BuildConfig
 import com.purple.aicalendar.core.utils.ScreenState
 import com.purple.aicalendar.domain.models.Event
 import com.purple.aicalendar.domain.usecase.GetAllTaskUsecase
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.onSuccess
 
@@ -83,7 +85,10 @@ class TaskViewModel  @Inject constructor(
         viewModelScope.launch {
             setTaskState(ScreenState.LoadingState)
             delay(500)
-            taskUseCase.getPredictions()
+            val now = LocalDate.now()
+            val month = now.monthValue
+            val year = now.year
+            taskUseCase.getPredictions(month = month,year = year)
                 .onSuccess { events ->
                     _events.value = events
                     _totalItems.value = events.size
@@ -99,7 +104,6 @@ class TaskViewModel  @Inject constructor(
         viewModelScope.launch {
             setSecondaryTaskState(ScreenState.LoadingState)
             Log.d("TaskViewModel", "postEvent: ${_keptEvents.value},${_discardedEvents.value}")
-            delay(5000)
             taskUseCase.postEvents(_keptEvents.value,_discardedEvents.value)
                 .onSuccess {
                     setSecondaryTaskState(ScreenState.Success("Success"))

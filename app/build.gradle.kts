@@ -18,14 +18,20 @@ android {
 
     defaultConfig {
         applicationId = "com.purple.aicalendar"
-        minSdk = 26
+        minSdk = 33
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("boolean", "DEBUG_LEVEL", "true")
-        buildConfigField("String", "BASE_URL", "\"https://firestore.googleapis.com/\"")
+        buildConfigField("String", "FB_BASE_URL", "\"https://firestore.googleapis.com/\"")
+        buildConfigField("String", "BASE_URL", "\"https://aicalendar-09s8.onrender.com/\"")
+//        buildConfigField("String", "BASE_URL", "\"https://aicalendar-api.calmglacier-666f6e0f.spaincentral.azurecontainerapps.io/\"")
+        buildConfigField("String", "USER_1", "\"11111111-1111-1111-1111-111111111111\"")
+        buildConfigField("String", "USER_2", "\"22222222-2222-2222-2222-222222222222\"")
+        buildConfigField("String", "USER_3", "\"33333333-3333-3333-3333-333333333333\"")
+        buildConfigField("String", "USER_4", "\"44444444-4444-4444-4444-444444444444\"")
     }
 
     room {
@@ -130,5 +136,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)
     implementation(libs.google.services)
+
+    implementation(libs.accompanist)
 //    implementation(libs.firebase.analytics.ktx)
 }
